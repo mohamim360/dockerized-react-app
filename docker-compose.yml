@@ -1,0 +1,12 @@
+services:
+  backend:
+    image: mehedihasan11/myreactapp-node:latest
+    ports:
+      - "5000:5000"
+
+  client:
+    image: mehedihasan11/myreactapp-frontend:latest
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
