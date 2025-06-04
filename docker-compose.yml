@@ -1,12 +1,14 @@
-services:
+services: 
+  # Backend Node.js API Service
   backend:
-    image: mehedihasan11/myreactapp-node:latest
+    image: mehedihasan11/myreactapp-node:latest  # Use prebuilt image from Docker Hub
     ports:
-      - "5000:5000"
+      - "5000:5000"  # Maps container port 5000 to host port 5000 (accessible via localhost:5000)
 
+  # Frontend React App Service
   client:
-    image: mehedihasan11/myreactapp-frontend:latest
+    image: mehedihasan11/myreactapp-frontend:latest  # Use prebuilt image of the React app (built and served with Nginx)
     ports:
-      - "3000:80"
+      - "3000:80"  # Maps container port 80 (Nginx) to host port 3000 (access via localhost:3000)
     depends_on:
-      - backend
+      - backend  # Ensures the backend container starts before this one (important if frontend needs API access)
