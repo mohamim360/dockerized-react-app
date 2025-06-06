@@ -1,14 +1,33 @@
-services: 
+
+services:
   # Backend Node.js API Service
   backend:
-    image: mehedihasan11/myreactapp-node:latest  # Use prebuilt image from Docker Hub
+    image: mehedihasan11/myreactapp-node:latest  # Pulls the backend image from Docker Hub
     ports:
-      - "5000:5000"  # Maps container port 5000 to host port 5000 (accessible via localhost:5000)
-
-  # Frontend React App Service
-  client:
-    image: mehedihasan11/myreactapp-frontend:latest  # Use prebuilt image of the React app (built and served with Nginx)
-    ports:
-      - "3000:80"  # Maps container port 80 (Nginx) to host port 3000 (access via localhost:3000)
+      - "5000:5000"  # Maps host port 5000 to container port 5000 (backend API access)
     depends_on:
-      - backend  # Ensures the backend container starts before this one (important if frontend needs API access)
+      - mongo  # Ensures MongoDB container starts before the backend
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/expense-tracker  
+
+  # Frontend React App Service (served via Nginx)
+  client:
+    image: mehedihasan11/myreactapp-frontend:latest  # Pulls the React app (built & served with Nginx)
+    ports:
+      - "3000:80"  # Maps host port 3000 to container port 80 (Nginx default)
+    depends_on:
+      - backend  # Waits for the backend to be up first
+
+  # MongoDB Database Service
+  mongo:
+    image: mongo  # Uses the official MongoDB image from Docker Hub
+    container_name: mongodb  # Optional: assigns a readable name to the MongoDB container
+    restart: always  # Automatically restarts the container if it crashes
+    ports:
+      - "27017:27017"  # Maps MongoDB default port to host for tools like MongoDB Compass
+    volumes:
+      - mongo_data:/data/db  # Persists MongoDB data between restarts using a named volume
+
+# Persistent storage volume for MongoDB data
+volumes:
+  mongo_data:

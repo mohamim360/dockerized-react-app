@@ -88,9 +88,31 @@ docker-compose up --build
 
 ---
 
+## Connect to Mongodb
+
+### Connect to MongoDB shell with auth
+```bash
+docker exec -it mongodb mongosh
+```
+
+### Then run MongoDB commands
+```bash
+> show dbs
+> use expense-tracker
+> db.expenses.find()
+```
+
+----
+
 ## 🧼 Cleanup
 
-To stop and remove containers:
+### 🛑 Stop Containers (Preserves Data)
+Use this when you want to temporarily stop services but keep all data and configurations:
+```bash
+docker-compose stop
+```
+
+### 🗑️ To stop and remove containers:
 
 ```bash
 docker-compose down

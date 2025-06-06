@@ -1,16 +1,26 @@
-let expenses = [];
+const Expense = require("../models/Expense");
 
-exports.addExpense = (req, res) => {
+exports.addExpense = async (req, res) => {
   const { title, amount, date } = req.body;
+
   if (!title || !amount || !date) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  const newExpense = { id: expenses.length + 1, title, amount, date };
-  expenses.push(newExpense);
-  res.status(201).json(newExpense);
+  try {
+    const newExpense = new Expense({ title, amount, date });
+    await newExpense.save();
+    res.status(201).json(newExpense);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
 };
 
-exports.getExpenses = (req, res) => {
-  res.json(expenses);
+exports.getExpenses = async (req, res) => {
+  try {
+    const expenses = await Expense.find().sort({ date: -1 });
+    res.json(expenses);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
 };
